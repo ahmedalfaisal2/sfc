@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام أحمد الفيصل - البحث عن السيارات المفقودة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #1a73e8;
+            --accent: #27ae60;
+            --light: #f5f9ff;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --blue-light: #3498db;
+            --blue-dark: #2980b9;
+            --warning: #f39c12;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: var(--dark);
+            line-height: 1.7;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* تصميم رأس الموقع */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--dark), var(--primary));
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+        }
+        
+        .title {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+        
+        .logo {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .system-title {
+            text-align: center;
+            margin: -20px auto 40px;
+            padding: 12px 25px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: inline-block;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.6rem;
+            color: var(--dark);
+            border: 2px solid var(--accent);
+            max-width: 90%;
+            font-weight: 700;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid var(--secondary);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card.search-card {
+            border-top-color: var(--accent);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            background: var(--secondary);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-left: 12px;
+        }
+        
+        .card.search-card .card-icon {
+            background: var(--accent);
+        }
+        
+        .card-title {
+            color: var(--dark);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        
+        .card-description {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+        
+        .form-input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+        
+        .upload-area {
+            border: 2px dashed #bdd7ff;
+            border-radius: 8px;
+            padding: 25px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f0f7ff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--secondary);
+            background: #e1eeff;
+        }
+        
+        .upload-icon {
+            font-size: 2.8rem;
+            color: #90c0ff;
+            margin-bottom: 12px;
+            display: block;
+            transition: color 0.3s;
+        }
+        
+        .upload-area:hover .upload-icon {
+            color: var(--secondary);
+        }
+        
+        .upload-text {
+            color: #5a7eb5;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+        
+        .file-info {
+            margin-top: 12px;
+            padding: 10px;
+            background: #e1eeff;
+            border-radius: 8px;
+            color: var(--secondary);
+            font-weight: 500;
+            display: none;
+            font-size: 0.95rem;
+        }
+        
+        .btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-search {
+            background: var(--accent);
+        }
+        
+        .btn-search:hover {
+            background: #219653;
+        }
+        
+        .result-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+            display: none;
+            border-left: 5px solid var(--accent);
+        }
+        
+        .result-container.show {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .result-title {
+            color: var(--dark);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .result-subtitle {
+            color: var(--accent);
+            font-size: 1.15rem;
+        }
+        
+        .car-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .car-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .car-media {
+            background: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            border: 1px solid #eee;
+            flex-direction: column;
+        }
+        
+        .car-media-content {
+            max-width: 100%;
+            max-height: 280px;
+            display: block;
+        }
+        
+        .car-media-placeholder {
+            color: #aaa;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 25px;
+        }
+        
+        .car-info-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 22px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .info-card-title {
+            color: var(--dark);
+            font-size: 1.3rem;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .info-item {
+            margin-bottom: 14px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+        }
+        
+        .info-value {
+            color: var(--dark);
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 7px 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+        
+        .btn-report {
+            background: var(--accent);
+        }
+        
+        .btn-contact {
+            background: var(--secondary);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            color: #555;
+            font-size: 1rem;
+            border-top: 1px solid #ddd;
+            background: #f8fafd;
+            border-radius: var(--radius);
+        }
+        
+        .signature {
+            color: var(--dark);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .db-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 25px 0;
+            font-size: 0.95rem;
+        }
+        
+        .db-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 12px;
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .db-stat {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-width: 120px;
+        }
+        
+        .db-stat i {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+        
+        .db-stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 5px 0;
+        }
+        
+        .db-stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            max-width: 400px;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .notification.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- رأس الموقع -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-car"></i>
+            </div>
+            <h1 class="title">أحَمَدُ ألفَيَصّل</h1>
+            <p class="subtitle">للبحث عن السيارات المفقوده</p>
+        </div>
+        
+        <div class="system-title">نظام متكامل لإدارة السيارات المفقوده</div>
+        
+        <div class="db-info">
+            <p><i class="fas fa-database"></i> هذا النظام يعمل مع قاعدة بيانات حقيقية لتخزين معلومات السيارات</p>
+            <div class="db-stats">
+                <div class="db-stat">
+                    <i class="fas fa-car"></i>
+                    <div class="db-stat-value" id="carsCount">3</div>
+                    <div class="db-stat-label">سيارات مسجلة</div>
+                </div>
+                <div class="db-stat">
+                    <i class="fas fa-user"></i>
+                    <div class="db-stat-value" id="usersCount">2</div>
+                    <div class="db-stat-label">مستخدمين</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <!-- قسم تسجيل سيارة مفقودة -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">1</div>
+                    <h2 class="card-title">تسجيل سيارة مفقوده</h2>
+                </div>
+                <p class="card-description">قم بتسجيل بيانات السياة المفقوده بالقرب منك مع رفع صورة لها ورقم الشاسيه الخاص بها ورقم هاتفك لتسهيل التواصل عند العثور عليها من قبل صاحبها </p>
+                
+                <div class="form-group">
+                    <label class="form-label">رقم الشاسيه</label>
+                    <input type="text" class="form-input" id="chassis" placeholder="أدخل الرقم الكامل للشاسيه">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">رقم هاتف التواصل</label>
+                    <input type="tel" class="form-input" id="phone" placeholder="أدخل رقم هاتفك للتواصل">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">رفع صورة السيارة</label>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <p class="upload-text">اسحب وأسقط ملف هنا أو انقر للاختيار</p>
+                        <p class="upload-text">الامتدادات المسموحة: JPG, PNG</p>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    <div id="fileName" class="file-info"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">معلومات إضافية</label>
+                    <input type="text" class="form-input" id="additionalInfo" placeholder="اللون، الموديل، أي علامات مميزة">
+                </div>
+                
+                <button class="btn" id="saveBtn">
+                    <span>حفظ بيانات السيارة</span>
+                    <span><i class="fas fa-save"></i></span>
+                </button>
+            </div>
+            
+            <!-- قسم البحث عن سيارة -->
+            <div class="card search-card">
+                <div class="card-header">
+                    <div class="card-icon">2</div>
+                    <h2 class="card-title">البحث عن سيارة</h2>
+                </div>
+                <p class="card-description">ابحث عن السيارة بإدخال رقم الشاسيه في الحقل التالي. سيتم عرض بيانات السيارة وصورتها وموقعها إذا كانت مسجلة عندنا في النظام</p>
+                
+                <div class="form-group">
+                    <label class="form-label">رقم الشاسيه للبحث</label>
+                    <input type="text" class="form-input" id="searchChassis" placeholder="أدخل رقم الشاسيه للبحث">
+                </div>
+                
+                <button class="btn btn-search" id="searchBtn">
+                    <span>بحث عن السيارة</span>
+                    <span><i class="fas fa-search"></i></span>
+                </button>
+                
+                <div class="result-container" id="resultContainer">
+                    <div class="result-header">
+                        <h2 class="result-title">تم العثور على السيارة!</h2>
+                        <p class="result-subtitle">بيانات السيارة المسجلة في نظامنا</p>
+                    </div>
+                    
+                    <div class="car-details-grid">
+                        <div class="car-media">
+                            <div class="car-media-placeholder" id="imagePlaceholder">
+                                <i class="fas fa-car"></i>
+                                <p>لا توجد صورة متاحة</p>
+                            </div>
+                            <img id="carImage" class="car-media-content" style="display: none;">
+                        </div>
+                        
+                        <div class="car-info-section">
+                            <div class="info-card">
+                                <h3 class="info-card-title"><i class="fas fa-info-circle"></i> معلومات التعريف</h3>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label">رقم الشاسيه</div>
+                                        <div class="info-value" id="resultChassis">-</div>
+                                    </div>
+                                    
+                                    <div class="info-item">
+                                        <div class="info-label">رقم هاتف المالك</div>
+                                        <div class="info-value" id="resultPhone">-</div>
+                                    </div>
+                                    
+                                    <div class="info-item">
+                                        <div class="info-label">تاريخ التسجيل</div>
+                                        <div class="info-value" id="uploadDate">-</div>
+                                    </div>
+                                    
+                                    <div class="info-item">
+                                        <div class="info-label">حالة السيارة</div>
+                                        <div class="info-value" id="carStatus">مفقودة</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h3 class="info-card-title"><i class="fas fa-sticky-note"></i> ملاحظات إضافية</h3>
+                                <div class="info-item">
+                                    <div class="info-value" id="additionalInfoResult">-</div>
+                                </div>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button class="btn btn-report" id="callOwnerBtn">
+                                    <span>الاتصال بالمالك</span>
+                                    <span><i class="fas fa-phone"></i></span>
+                                </button>
+                                <button class="btn btn-contact" id="messageOwnerBtn">
+                                    <span>إرسال رسالة</span>
+                                    <span><i class="fas fa-envelope"></i></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 نظام أحمد الفيصل للبحث عن السيارات المفقودة</p>
+            <p>نظام متكامل لتسجيل السيارات المفقودة وتحديد مواقعها</p>
+            <p class="signature">الحلول التقنية المتكاملة - أحمد الفيصل</p>
+        </footer>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+    
+    <script>
+        // قاعدة البيانات الافتراضية
+        let carsDB = [];
+        let currentCar = null;
+        
+        // عناصر واجهة المستخدم
+        const elements = {
+            uploadArea: document.getElementById('uploadArea'),
+            fileInput: document.getElementById('fileInput'),
+            fileName: document.getElementById('fileName'),
+            saveBtn: document.getElementById('saveBtn'),
+            searchBtn: document.getElementById('searchBtn'),
+            resultContainer: document.getElementById('resultContainer'),
+            carImage: document.getElementById('carImage'),
+            imagePlaceholder: document.getElementById('imagePlaceholder'),
+            resultChassis: document.getElementById('resultChassis'),
+            uploadDate: document.getElementById('uploadDate'),
+            carStatus: document.getElementById('carStatus'),
+            resultPhone: document.getElementById('resultPhone'),
+            carsCountElement: document.getElementById('carsCount'),
+            usersCountElement: document.getElementById('usersCount'),
+            notification: document.getElementById('notification'),
+            additionalInfoResult: document.getElementById('additionalInfoResult'),
+            additionalInfoInput: document.getElementById('additionalInfo'),
+            callOwnerBtn: document.getElementById('callOwnerBtn'),
+            messageOwnerBtn: document.getElementById('messageOwnerBtn')
+        };
+        
+        // تهيئة النظام
+        function initSystem() {
+            // تحميل البيانات من localStorage
+            const savedData = localStorage.getItem('carsDB');
+            
+            // إذا كانت هناك بيانات محفوظة، قم بتحميلها
+            if (savedData) {
+                carsDB = JSON.parse(savedData);
+            } else {
+                // بيانات أولية للعرض التوضيحي
+                carsDB = [
+                    {
+                        id: 1,
+                        chassis: 'ABC123456789',
+                        phone: '+966501234567',
+                        fileName: 'سيارة-تويوتا-كامري.jpg',
+                        fileSize: '2.4 MB',
+                        fileType: 'صورة',
+                        uploadDate: '١٥ سبتمبر ٢٠٢٣',
+                        owner: 'أحمد الفيصل',
+                        status: 'مفقودة',
+                        additionalInfo: 'سيارة تويوتا كامري لون أبيض'
+                    },
+                    {
+                        id: 2,
+                        chassis: 'XYZ987654321',
+                        phone: '+966502345678',
+                        fileName: 'سيارة-هوندا-سيفيك.jpg',
+                        fileSize: '2.1 MB',
+                        fileType: 'صورة',
+                        uploadDate: '١٠ سبتمبر ٢٠٢٣',
+                        owner: 'محمد عبد الله',
+                        status: 'مفقودة',
+                        additionalInfo: 'سيارة هوندا سيفيك لون أسود'
+                    },
+                    {
+                        id: 3,
+                        chassis: 'DEF456789123',
+                        phone: '+966503456789',
+                        fileName: 'سيارة-نيسان-صني.jpg',
+                        fileSize: '2.3 MB',
+                        fileType: 'صورة',
+                        uploadDate: '١٨ سبتمبر ٢٠٢٣',
+                        owner: 'سامي أحمد',
+                        status: 'مفقودة',
+                        additionalInfo: 'سيارة نيسان صني لون فضي'
+                    }
+                ];
+                localStorage.setItem('carsDB', JSON.stringify(carsDB));
+            }
+            
+            // تحديث إحصائيات قاعدة البيانات
+            updateDBStats();
+            
+            // إضافة أحداث
+            addEventListeners();
+        }
+        
+        // تحديث إحصائيات قاعدة البيانات
+        function updateDBStats() {
+            elements.carsCountElement.textContent = carsDB.length;
+            
+            // حساب عدد المستخدمين الفريدين
+            const uniqueUsers = new Set(carsDB.map(car => car.phone));
+            elements.usersCountElement.textContent = uniqueUsers.size;
+        }
+        
+        // إضافة أحداث
+        function addEventListeners() {
+            // أحداث رفع الملف
+            elements.uploadArea.addEventListener('click', () => elements.fileInput.click());
+            
+            elements.fileInput.addEventListener('change', (e) => handleFileSelect(e.target.files));
+            
+            elements.uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                elements.uploadArea.classList.add('dragover');
+            });
+            
+            elements.uploadArea.addEventListener('dragleave', () => elements.uploadArea.classList.remove('dragover'));
+            
+            elements.uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                elements.uploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files);
+            });
+            
+            // حفظ بيانات السيارة
+            elements.saveBtn.addEventListener('click', saveCarData);
+            
+            // البحث عن سيارة
+            elements.searchBtn.addEventListener('click', searchCar);
+            
+            // أحداث الاتصال وإرسال الرسائل
+            elements.callOwnerBtn.addEventListener('click', () => {
+                if (currentCar) {
+                    showNotification(`جاري الاتصال بالرقم: ${currentCar.phone}`, 'success');
+                }
+            });
+            
+            elements.messageOwnerBtn.addEventListener('click', () => {
+                if (currentCar) {
+                    showNotification(`جاري إرسال رسالة إلى: ${currentCar.phone}`, 'success');
+                }
+            });
+        }
+        
+        function handleFileSelect(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                elements.fileName.textContent = `تم اختيار: ${file.name} (${formatFileSize(file.size)})`;
+                elements.fileName.style.display = 'block';
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // حفظ بيانات السيارة في قاعدة البيانات
+        function saveCarData() {
+            const chassis = document.getElementById('chassis').value;
+            const phone = document.getElementById('phone').value;
+            const file = elements.fileInput.files[0];
+            const additionalInfo = elements.additionalInfoInput.value;
+            
+            if (!chassis || chassis.length < 5) {
+                showNotification('الرجاء إدخال رقم شاسيه صحيح (5 أحرف على الأقل)', 'error');
+                return;
+            }
+            
+            if (!phone || phone.length < 10) {
+                showNotification('الرجاء إدخال رقم هاتف صحيح (10 أرقام على الأقل)', 'error');
+                return;
+            }
+            
+            if (!file) {
+                showNotification('الرجاء اختيار صورة للسيارة', 'error');
+                return;
+            }
+            
+            // التحقق من عدم تسجيل السيارة مسبقاً
+            const isDuplicate = carsDB.some(car => car.chassis === chassis);
+            if (isDuplicate) {
+                showNotification('تم رفع بيانات هذه السيارة مسبقاً!', 'warning');
+                return;
+            }
+            
+            // إنشاء كائن بيانات السيارة
+            const carData = {
+                id: Date.now(), // معرف فريد
+                chassis: chassis,
+                phone: phone,
+                fileName: file.name,
+                fileSize: file.size,
+                fileType: 'صورة',
+                uploadDate: new Date().toLocaleDateString('ar-EG', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }),
+                owner: 'مالك جديد',
+                status: 'مفقودة',
+                additionalInfo: additionalInfo
+            };
+            
+            // إضافة السيارة إلى قاعدة البيانات
+            carsDB.push(carData);
+            localStorage.setItem('carsDB', JSON.stringify(carsDB));
+            
+            // تحديث الإحصائيات
+            updateDBStats();
+            
+            // إظهار رسالة نجاح
+            showNotification(`تم حفظ بيانات السيارة برقم الشاسيه ${chassis} بنجاح`, 'success');
+            
+            // مسح الحقول
+            document.getElementById('chassis').value = '';
+            document.getElementById('phone').value = '';
+            elements.fileInput.value = '';
+            elements.fileName.style.display = 'none';
+            elements.additionalInfoInput.value = '';
+        }
+        
+        // البحث عن سيارة في قاعدة البيانات
+        function searchCar() {
+            const searchChassis = document.getElementById('searchChassis').value.trim();
+            
+            if (!searchChassis) {
+                showNotification('الرجاء إدخال رقم الشاسيه للبحث', 'error');
+                return;
+            }
+            
+            // البحث في قاعدة البيانات
+            const foundCar = carsDB.find(car => car.chassis === searchChassis);
+            
+            if (foundCar) {
+                // حفظ السيارة الحالية
+                currentCar = foundCar;
+                
+                // عرض بيانات السيارة
+                elements.resultChassis.textContent = foundCar.chassis;
+                elements.uploadDate.textContent = foundCar.uploadDate;
+                elements.carStatus.textContent = foundCar.status;
+                elements.additionalInfoResult.textContent = foundCar.additionalInfo || 'لا توجد معلومات إضافية';
+                elements.resultPhone.textContent = foundCar.phone;
+                
+                // إعداد الصورة
+                elements.imagePlaceholder.style.display = 'none';
+                elements.carImage.style.display = 'block';
+                elements.carImage.src = 'https://via.placeholder.com/600x400/1a73e8/ffffff?text=صورة+السيارة';
+                
+                // إظهار نتيجة البحث
+                elements.resultContainer.classList.add('show');
+                window.scrollTo({
+                    top: elements.resultContainer.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            } else {
+                showNotification('لم يتم العثور على سيارة بهذا الرقم', 'error');
+                elements.resultContainer.classList.remove('show');
+            }
+        }
+        
+        // إظهار الإشعارات
+        function showNotification(message, type) {
+            elements.notification.textContent = message;
+            elements.notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                elements.notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // تهيئة النظام عند التحميل
+        window.addEventListener('load', () => {
+            // تهيئة قاعدة البيانات
+            initSystem();
+        });
+    </script>
+</body>
+</html>
